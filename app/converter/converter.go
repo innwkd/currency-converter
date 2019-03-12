@@ -67,6 +67,18 @@ func (c *Converter) CachedRates() []types.CurrencyRate {
 	return rates
 }
 
+func (c *Converter) AllowedBases() []types.CurrencyPair {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.bases
+}
+
+func (c *Converter) CacheDuration() time.Duration {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.cacheDuration
+}
+
 func (c *Converter) baseAllowed(pair types.CurrencyPair) bool {
 	for _, base := range c.bases {
 		if base == pair {

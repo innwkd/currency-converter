@@ -15,8 +15,7 @@ import (
 
 type Server struct {
 	Converter     types.Converter
-	Bases         []types.CurrencyPair
-	CacheDuration time.Duration
+	Stat types.ConverterStat
 }
 
 func (s *Server) Start() error {
@@ -66,9 +65,9 @@ type statResponse struct {
 
 func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, statResponse{
-		AvailableBases: s.Bases,
-		CachedRates:    s.Converter.CachedRates(),
-		CacheDuration:  fmt.Sprintf("%.0f min", s.CacheDuration.Minutes()),
+		AvailableBases: s.Stat.AllowedBases(),
+		CachedRates:    s.Stat.CachedRates(),
+		CacheDuration:  fmt.Sprintf("%.0f min", s.Stat.CacheDuration().Minutes()),
 	})
 }
 
@@ -77,20 +76,3 @@ func (s *Server) pingAction(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong"))
 }
 
-type ErrorResponse struct {
-	Reason string `json:"reason"`
-}
-
-func JSONError(w http.ResponseWriter, r *http.Request, code int, reason string) {
-	render.Status(r, code)
-
-	if reason != "" && code != http.StatusInternalServerError {
-		render.JSON(w, r, ErrorResponse{Reason: reason})
-		return
-	}
-}
-
-func JSONInternalError(w http.ResponseWriter, r *http.Request) {
-	render.Status(r, http.StatusInternalServerError)
-	render.JSON(w, r, ErrorResponse{Reason: "Something went wrong, sorry. Try again later"})
-}

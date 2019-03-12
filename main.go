@@ -16,13 +16,8 @@ func main() {
 		{Base: "USD", To: "EUR"},
 	}
 
-	cacheDuration := time.Hour
-
-	server := http.Server{
-		Bases:         bases,
-		Converter:     converter.NewConverter(provider.NewExchangeRatesIoProvider(), bases, cacheDuration),
-		CacheDuration: cacheDuration,
-	}
+	converter := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, time.Hour)
+	server := http.Server{Converter: converter, Stat: converter}
 
 	logrus.Info("Starting server")
 	logrus.WithError(server.Start()).Fatal("Server can't start")

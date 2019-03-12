@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/shopspring/decimal"
 	"fmt"
+	"time"
 )
 
 // Currency in ISO 4217 format
@@ -25,5 +26,10 @@ type Conversion struct {
 
 type Converter interface {
 	Convert(pair CurrencyPair, amount decimal.Decimal) (Conversion, error)
+}
+
+type ConverterStat interface {
 	CachedRates() []CurrencyRate
+	AllowedBases() []CurrencyPair
+	CacheDuration() time.Duration
 }
