@@ -1,0 +1,67 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "Pxx+8cipatmpykEo9DpKFqBIOkk=",
+			"path": "github.com/go-chi/chi",
+			"revision": "1a6bb108ccf279c8dac6f9bad857d773b4f9b421",
+			"revisionTime": "2019-01-17T22:35:40Z"
+		},
+		{
+			"checksumSHA1": "WpJC99tqulCFbVV2kcVWTEAM9vo=",
+			"path": "github.com/go-chi/chi/middleware",
+			"revision": "1a6bb108ccf279c8dac6f9bad857d773b4f9b421",
+			"revisionTime": "2019-01-17T22:35:40Z"
+		},
+		{
+			"checksumSHA1": "Uxtuf0yrw6/aMBgPMj1JZRRllBY=",
+			"path": "github.com/go-chi/render",
+			"revision": "3215478343fbc559bd3fc08f7031bb134d6bdad5",
+			"revisionTime": "2018-05-31T15:06:17Z"
+		},
+		{
+			"checksumSHA1": "CxNwJP++vjUAyy3bbJnNss1Il9Q=",
+			"path": "github.com/moul/http2curl",
+			"revision": "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d",
+			"revisionTime": "2017-09-19T18:10:01Z"
+		},
+		{
+			"checksumSHA1": "eMb+00rKbq8U/bt40OvX1bXMNVQ=",
+			"path": "github.com/parnurzeal/gorequest",
+			"revision": "8e3aed27fe49f7fdc765dad067845f600fc984e8",
+			"revisionTime": "2017-10-15T11:04:55Z"
+		},
+		{
+			"checksumSHA1": "0H/VjT8w1CB702qWpbYMqr65Mf0=",
+			"path": "github.com/pkg/errors",
+			"revision": "ffb6e22f01932bf7ac35e0bad9be11f01d1c8685",
+			"revisionTime": "2019-01-09T06:16:28Z"
+		},
+		{
+			"checksumSHA1": "qjHk+d0n4hXUZxTcVX/08fNoCjk=",
+			"path": "github.com/shopspring/decimal",
+			"revision": "19e3cb6c29303990525b56f51acf77c5630dd88a",
+			"revisionTime": "2018-06-07T14:48:47Z"
+		},
+		{
+			"checksumSHA1": "uQaurKRyH+DxCdmpLDHbIda2yjU=",
+			"path": "github.com/tarent/logrus",
+			"revision": "e87ac797d188e13915c297af484d5d7fe2199523",
+			"revisionTime": "2017-05-22T12:14:04Z"
+		},
+		{
+			"checksumSHA1": "bhX9GCMtACwF4bEFcVFRoHLz7xQ=",
+			"path": "golang.org/x/net/publicsuffix",
+			"revision": "16b79f2e4e95ea23b2bf9903c9809ff7b013ce85",
+			"revisionTime": "2019-03-01T08:36:47Z"
+		},
+		{
+			"checksumSHA1": "kukg3DZezN5mPBAaWGUa4bCZCVo=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "b90733256f2e882e81d52f9126de08df5615afd9",
+			"revisionTime": "2019-01-23T07:55:40Z"
+		}
+	],
+	"rootPath": "github.com/yddmat/currency-converter"
+}

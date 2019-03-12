@@ -33,10 +33,14 @@ type getRateResponse struct {
 
 func (e *ExchangeRatesIo) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	resp := getRateResponse{}
-	r, _, _ := gorequest.
+	r, _, err := gorequest.
 		New().
 		Get(fmt.Sprintf(e.domain.String()+"/latest?base=%s&symbols=%s", pair.Base, pair.To)).
 		EndStruct(&resp)
+
+	if err != nil {
+		return types.CurrencyRate{}, errors.Wrapf(err[0], "can't send request")
+	}
 
 	if r.StatusCode != http.StatusOK {
 		return types.CurrencyRate{}, errors.Errorf("http request return %d response code", r.StatusCode)
