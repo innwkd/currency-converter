@@ -1,23 +1,29 @@
 package types
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+	"fmt"
+)
 
-// Currency represents currency in ISO 4217 format
+// Currency in ISO 4217 format
 type Currency string
 
 type CurrencyPair struct {
-	From Currency `json:"from"`
+	Base Currency `json:"from"`
 	To   Currency `json:"to"`
+}
+
+func (cp CurrencyPair) String() string {
+	return fmt.Sprintf("%s_%s", cp.Base, cp.To)
 }
 
 // Conversion represents one conversion result
 type Conversion struct {
-	Amount decimal.Decimal `json:"amount"`
-	Result decimal.Decimal `json:"result"`
-
-	CurrencyRate CurrencyRate `json:"currency_rate"`
+	Result       decimal.Decimal `json:"result"`
+	CurrencyRate CurrencyRate    `json:"currency_rate"`
 }
 
 type Converter interface {
 	Convert(pair CurrencyPair, amount decimal.Decimal) (Conversion, error)
+	CachedRates() []CurrencyRate
 }

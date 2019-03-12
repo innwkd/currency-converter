@@ -3,61 +3,77 @@ package converter
 import (
 	"sync"
 
+	"time"
+
 	"github.com/shopspring/decimal"
 	"github.com/yddmat/currency-converter/app/types"
+	"github.com/pkg/errors"
 )
 
 type Converter struct {
-	ratesCache map[types.CurrencyPair]types.CurrencyRate
-	providers  []types.RateProvider
+	ratesCache    map[types.CurrencyPair]types.CurrencyRate
+	cacheDuration time.Duration
+	provider      types.RateProvider
+	bases         []types.CurrencyPair
 
-	// mu protecting rates and providers
 	mu sync.RWMutex
 }
 
-func NewConverter(providers ...types.RateProvider) *Converter {
-	return &Converter{ratesCache: make(map[types.CurrencyPair]types.CurrencyRate), providers: providers}
+func NewConverter(provider types.RateProvider, bases []types.CurrencyPair, cacheDuration time.Duration) *Converter {
+	return &Converter{
+		ratesCache:    make(map[types.CurrencyPair]types.CurrencyRate),
+		cacheDuration: cacheDuration,
+		provider:      provider,
+		bases:         bases,
+	}
 }
 
 func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
-	conversion := types.Conversion{
-		Amount: amount,
+	var err error
+	c.mu.RLock()
+
+	if !c.baseAllowed(pair) {
+		return types.Conversion{}, types.ConverterError("base is not allowed")
 	}
 
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	rate, cached := c.ratesCache[pair]
+	c.mu.RUnlock()
 
-	// TODO check is rate allowed
+	if !cached || rate.UpdatedAt.Add(c.cacheDuration).Before(time.Now()) {
+		rate, err = c.provider.GetRate(pair)
+		if err != nil {
+			return types.Conversion{}, errors.Wrapf(err, "can't update missing rate")
+		}
 
-	var cached, updated bool
-	conversion.CurrencyRate, cached = c.getRate(pair)
-	if !cached {
-		conversion.CurrencyRate, updated = c.updateRate(pair)
-		if !updated {
-			// log
-			return types.Conversion{}, types.ConverterError("error while updating missing rate")
+		c.mu.Lock()
+		c.ratesCache[pair] = rate
+		c.mu.Unlock()
+	}
+
+	return types.Conversion{
+		Result:       amount.Mul(rate.Value),
+		CurrencyRate: rate,
+	}, nil
+}
+
+func (c *Converter) CachedRates() []types.CurrencyRate {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	rates := make([]types.CurrencyRate, 0)
+	for _, cache := range c.ratesCache {
+		rates = append(rates, cache)
+	}
+
+	return rates
+}
+
+func (c *Converter) baseAllowed(pair types.CurrencyPair) bool {
+	for _, base := range c.bases {
+		if base == pair {
+			return true
 		}
 	}
 
-	conversion.Result = amount.Mul(conversion.CurrencyRate.Value)
-	return conversion, nil
-}
-
-func (c *Converter) getRate(pair types.CurrencyPair) (types.CurrencyRate, bool) {
-	rate, exists := c.ratesCache[pair]
-	return rate, exists
-}
-
-func (c *Converter) updateRate(pair types.CurrencyPair) (types.CurrencyRate, bool) {
-	for _, provider := range c.providers {
-		rate, err := provider.GetRate(pair)
-		if err == nil {
-			c.ratesCache[pair] = rate
-			return rate, true
-		}
-
-		// log warning
-	}
-
-	return types.CurrencyRate{}, false
+	return false
 }

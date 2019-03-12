@@ -3,20 +3,31 @@ package http
 import (
 	"net/http"
 
+	"time"
+
+	"fmt"
+
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/shopspring/decimal"
 	"github.com/yddmat/currency-converter/app/types"
+	"github.com/tarent/logrus"
 )
 
 type Server struct {
-	Converter types.Converter
+	Converter     types.Converter
+	Bases         []types.CurrencyPair
+	CacheDuration time.Duration
 }
 
 func (s *Server) Start() error {
 	router := chi.NewRouter()
 
+	router.Use(middleware.Timeout(time.Second * 2))
 	router.Get("/convert", s.convertAction)
+	router.Get("/stat", s.statAction)
+
 	router.Get("/ping", s.pingAction)
 
 	return http.ListenAndServe(":8080", router)
@@ -29,10 +40,11 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	conversion, err := s.Converter.Convert(types.CurrencyPair{
-		From: types.Currency(r.URL.Query().Get("from")),
+	pair := types.CurrencyPair{
+		Base: types.Currency(r.URL.Query().Get("from")),
 		To:   types.Currency(r.URL.Query().Get("to")),
-	}, amount)
+	}
+	conversion, err := s.Converter.Convert(pair, amount)
 
 	if err != nil {
 		if types.IsConverterError(err) {
@@ -40,10 +52,26 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		logrus.WithError(err).Errorf("Can't convert value %s", pair)
 		JSONInternalError(w, r)
+		return
 	}
-
+	
 	render.JSON(w, r, conversion)
+}
+
+type statResponse struct {
+	AvailableBases []types.CurrencyPair `json:"available_bases"`
+	CachedRates    []types.CurrencyRate `json:"cached_rates"`
+	CacheDuration  string
+}
+
+func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {
+	render.JSON(w, r, statResponse{
+		AvailableBases: s.Bases,
+		CachedRates:    s.Converter.CachedRates(),
+		CacheDuration:  fmt.Sprintf("%.0f min", s.CacheDuration.Minutes()),
+	})
 }
 
 func (s *Server) pingAction(w http.ResponseWriter, r *http.Request) {

@@ -3,18 +3,27 @@ package main
 import (
 	"time"
 
-	"github.com/shopspring/decimal"
 	"github.com/yddmat/currency-converter/app/api/http"
 	"github.com/yddmat/currency-converter/app/converter"
 	"github.com/yddmat/currency-converter/app/provider"
+	"github.com/yddmat/currency-converter/app/types"
+	"github.com/tarent/logrus"
 )
 
 func main() {
-	fakeRate, _ := decimal.NewFromString("26.6")
-
-	server := http.Server{
-		Converter: converter.NewConverter(&provider.FakeProvider{Rate: fakeRate, UpdateTime: time.Unix(5, 0)}),
+	bases := []types.CurrencyPair{
+		{Base: "EUR", To: "USD"},
+		{Base: "USD", To: "EUR"},
 	}
 
-	server.Start()
+	cacheDuration := time.Hour
+
+	server := http.Server{
+		Bases:         bases,
+		Converter:     converter.NewConverter(provider.NewExchangeRatesIoProvider(), bases, cacheDuration),
+		CacheDuration: cacheDuration,
+	}
+
+	logrus.Info("Starting server")
+	logrus.WithError(server.Start()).Fatal("Server can't start")
 }
