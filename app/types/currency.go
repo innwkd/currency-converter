@@ -15,10 +15,9 @@ type Conversion struct {
 	Amount decimal.Decimal `json:"amount"`
 	Result decimal.Decimal `json:"result"`
 
-	Pair CurrencyPair `json:"currency"`
-	Rate CurrencyRate `json:"rate"`
+	CurrencyRate CurrencyRate `json:"currency_rate"`
 }
 
 type Converter interface {
-	Convert(from, to Currency, amount decimal.Decimal) (Conversion, error)
+	Convert(pair CurrencyPair, amount decimal.Decimal) (Conversion, error)
 }

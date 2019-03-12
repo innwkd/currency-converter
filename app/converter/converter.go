@@ -3,9 +3,6 @@ package converter
 import (
 	"sync"
 
-	"fmt"
-
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	"github.com/yddmat/currency-converter/app/types"
 )
@@ -23,27 +20,27 @@ func NewConverter(providers ...types.RateProvider) *Converter {
 }
 
 func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
-	var err error
+	conversion := types.Conversion{
+		Amount: amount,
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	// TODO check is rate allowed
 
-	currency, exist := c.getRate(pair)
-	if !exist {
-		currency, err = c.updateRate(pair)
-		if err != nil {
+	var cached, updated bool
+	conversion.CurrencyRate, cached = c.getRate(pair)
+	if !cached {
+		conversion.CurrencyRate, updated = c.updateRate(pair)
+		if !updated {
 			// log
-			return types.Conversion{}, errors.Wrapf(err, "can't update rate")
+			return types.Conversion{}, types.ConverterError("error while updating missing rate")
 		}
 	}
 
-	return types.Conversion{
-		Amount: amount,
-		Result: amount.Mul(currency.Rate),
-		Pair:   pair,
-		Rate:   currency,
-	}, nil
+	conversion.Result = amount.Mul(conversion.CurrencyRate.Value)
+	return conversion, nil
 }
 
 func (c *Converter) getRate(pair types.CurrencyPair) (types.CurrencyRate, bool) {
@@ -51,17 +48,16 @@ func (c *Converter) getRate(pair types.CurrencyPair) (types.CurrencyRate, bool) 
 	return rate, exists
 }
 
-func (c *Converter) updateRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
+func (c *Converter) updateRate(pair types.CurrencyPair) (types.CurrencyRate, bool) {
 	for _, provider := range c.providers {
 		rate, err := provider.GetRate(pair)
 		if err == nil {
-			fmt.Println("pair updated")
 			c.ratesCache[pair] = rate
-			return rate, nil
+			return rate, true
 		}
 
 		// log warning
 	}
 
-	return types.CurrencyRate{}, errors.New("can't update rate")
+	return types.CurrencyRate{}, false
 }
