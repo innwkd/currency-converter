@@ -2,9 +2,7 @@ package http
 
 import (
 	"net/http"
-
 	"time"
-
 	"fmt"
 
 	"github.com/go-chi/chi"
@@ -56,7 +54,7 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 		JSONInternalError(w, r)
 		return
 	}
-	
+
 	render.JSON(w, r, conversion)
 }
 

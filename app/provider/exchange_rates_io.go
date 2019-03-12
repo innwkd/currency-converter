@@ -35,7 +35,6 @@ func (e *ExchangeRatesIo) GetRate(pair types.CurrencyPair) (types.CurrencyRate, 
 	resp := getRateResponse{}
 	r, _, _ := gorequest.
 		New().
-		Timeout(time.Second * 2).
 		Get(fmt.Sprintf(e.domain.String()+"/latest?base=%s&symbols=%s", pair.Base, pair.To)).
 		EndStruct(&resp)
 

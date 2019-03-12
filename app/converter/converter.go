@@ -2,7 +2,6 @@ package converter
 
 import (
 	"sync"
-
 	"time"
 
 	"github.com/shopspring/decimal"
