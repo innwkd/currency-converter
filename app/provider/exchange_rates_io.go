@@ -31,6 +31,10 @@ type getRateResponse struct {
 	Rates map[string]decimal.Decimal `json:"rates"`
 }
 
+func (e *ExchangeRatesIO) Name() string {
+	return e.name
+}
+
 func (e *ExchangeRatesIO) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	resp := getRateResponse{}
 	r, _, err := gorequest.
@@ -58,7 +62,6 @@ func (e *ExchangeRatesIO) GetRate(pair types.CurrencyPair) (types.CurrencyRate, 
 	return types.CurrencyRate{
 		Pair:      pair,
 		Value:     rate,
-		Provider:  e.name,
 		UpdatedAt: time.Now(),
 	}, nil
 }

@@ -44,6 +44,7 @@ func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (ty
 			return types.Conversion{}, errors.Wrapf(err, "can't update missing rate")
 		}
 
+		rate.Provider = c.provider.Name()
 		c.mu.Lock()
 		c.ratesCache[pair] = rate
 		c.mu.Unlock()

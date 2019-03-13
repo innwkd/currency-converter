@@ -15,5 +15,6 @@ type CurrencyRate struct {
 }
 
 type RateProvider interface {
+	Name() string
 	GetRate(pair CurrencyPair) (CurrencyRate, error)
 }

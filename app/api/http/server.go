@@ -22,9 +22,9 @@ func (s *Server) Start() error {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Timeout(time.Second * 2))
+
 	router.Get("/convert", s.convertAction)
 	router.Get("/stat", s.statAction)
-
 	router.Get("/ping", s.pingAction)
 
 	return http.ListenAndServe(":8080", router)
@@ -41,8 +41,8 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 		Base: types.Currency(r.URL.Query().Get("from")),
 		To:   types.Currency(r.URL.Query().Get("to")),
 	}
-	conversion, err := s.Converter.Convert(pair, amount)
 
+	conversion, err := s.Converter.Convert(pair, amount)
 	if err != nil {
 		if types.IsConverterError(err) {
 			JSONError(w, r, http.StatusBadRequest, err.Error())

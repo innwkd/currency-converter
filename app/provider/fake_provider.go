@@ -12,11 +12,14 @@ type FakeProvider struct {
 	UpdateTime time.Time
 }
 
+func (fp *FakeProvider) Name() string {
+	return "fake"
+}
+
 func (fp *FakeProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	return types.CurrencyRate{
 		Pair:      pair,
 		Value:     fp.Rate,
-		Provider:  "fake",
 		UpdatedAt: fp.UpdateTime,
 	}, nil
 }
