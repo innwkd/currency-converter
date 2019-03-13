@@ -1,7 +1,5 @@
 ## Currency converter
-- Not tested
-- Not for production
-- Just for fun
+Not for production. For practise purposes only
 
 ## Supported currency providers
 - fake
