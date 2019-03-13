@@ -60,7 +60,7 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 type statResponse struct {
 	AvailableBases []types.CurrencyPair `json:"available_bases"`
 	CachedRates    []types.CurrencyRate `json:"cached_rates"`
-	CacheDuration  string
+	CacheDuration  string `json:"cache_duration"`
 }
 
 func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {

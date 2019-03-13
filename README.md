@@ -15,11 +15,60 @@ Not for production. For practise purposes only
 ```
 curl --request GET --url 'http://localhost:12345/convert?amount=10&from=USD&to=EUR'
 ```
-_{"result":"8.869179601","currency_rate":{"pair":{"from":"USD","to":"EUR"},"value":"0.8869179601","provider":"exchangeratesapi.io","updated_at":"2019-03-13T16:39:41.218807+03:00"}}_
+```
+{
+   "available_bases":[
+      {
+         "from":"EUR",
+         "to":"USD"
+      },
+      {
+         "from":"USD",
+         "to":"EUR"
+      }
+   ],
+   "cached_rates":[
+      {
+         "pair":{
+            "from":"USD",
+            "to":"EUR"
+         },
+         "value":"0.8869179601",
+         "provider":"exchangeratesapi.io",
+         "updated_at":"2019-03-13T16:39:41.218807+03:00"
+      }
+   ],
+   "CacheDuration":"60 min"
+}
+```
 
 - Stats
 ```
 curl --request GET --url http://localhost:12345/stat
 ```
-_{"available_bases":[{"from":"EUR","to":"USD"},{"from":"USD","to":"EUR"}],"cached_rates":[{"pair":{"from":"USD","to":"EUR"},"value":"0.8869179601","provider":"exchangeratesapi.io","updated_at":"2019-03-13T16:39:41.218807+03:00"}],"CacheDuration":"60 min"}_ 
-  
+```
+{
+   "available_bases":[
+      {
+         "from":"EUR",
+         "to":"USD"
+      },
+      {
+         "from":"USD",
+         "to":"EUR"
+      }
+   ],
+   "cached_rates":[
+      {
+         "pair":{
+            "from":"USD",
+            "to":"EUR"
+         },
+         "value":"0.8869179601",
+         "provider":"exchangeratesapi.io",
+         "updated_at":"2019-03-13T16:39:41.218807+03:00"
+      }
+   ],
+   "cache_duration":"60 min"
+}
+```
