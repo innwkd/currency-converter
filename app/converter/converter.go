@@ -68,7 +68,7 @@ func (c *Converter) CachedRates() []types.CurrencyRate {
 	return rates
 }
 
-func (c *Converter) AllowedBases() []types.CurrencyPair {
+func (c *Converter) AllowedPair() []types.CurrencyPair {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	return c.bases

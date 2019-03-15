@@ -36,7 +36,7 @@ curl --request GET --url http://localhost:12345/stat
 ```
 ```
 {
-   "available_bases":[
+   "available_pair":[
       {
          "from":"EUR",
          "to":"USD"
@@ -57,6 +57,6 @@ curl --request GET --url http://localhost:12345/stat
          "updated_at":"2019-03-13T16:49:05.315733+03:00"
       }
    ],
-   "cache_duration":"60 min"
+   "cache_duration":3600
 }
 ```

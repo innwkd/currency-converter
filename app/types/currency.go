@@ -30,6 +30,6 @@ type Converter interface {
 
 type ConverterStat interface {
 	CachedRates() []CurrencyRate
-	AllowedBases() []CurrencyPair
+	AllowedPair() []CurrencyPair
 	CacheDuration() time.Duration
 }

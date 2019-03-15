@@ -3,8 +3,6 @@ package http
 import (
 	"net/http"
 	"time"
-	"fmt"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -58,16 +56,16 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 }
 
 type statResponse struct {
-	AvailableBases []types.CurrencyPair `json:"available_bases"`
-	CachedRates    []types.CurrencyRate `json:"cached_rates"`
-	CacheDuration  string `json:"cache_duration"`
+	AvailablePair []types.CurrencyPair `json:"available_pair"`
+	CachedRates   []types.CurrencyRate `json:"cached_rates"`
+	CacheDuration int64               `json:"cache_duration"`
 }
 
 func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, statResponse{
-		AvailableBases: s.Stat.AllowedBases(),
-		CachedRates:    s.Stat.CachedRates(),
-		CacheDuration:  fmt.Sprintf("%.0f min", s.Stat.CacheDuration().Minutes()),
+		AvailablePair: s.Stat.AllowedPair(),
+		CachedRates:   s.Stat.CachedRates(),
+		CacheDuration: int64(s.Stat.CacheDuration().Seconds()),
 	})
 }
 
