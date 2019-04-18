@@ -68,9 +68,16 @@ type statResponse struct {
 }
 
 func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {
+	rates, err := s.Stat.CachedRates()
+	if err != nil {
+		logrus.WithError(err).Errorf("Can't retrieve cached rates ")
+		JSONInternalError(w, r)
+		return
+	}
+
 	render.JSON(w, r, statResponse{
 		AvailablePair: s.Stat.AllowedPair(),
-		CachedRates:   s.Stat.CachedRates(),
+		CachedRates:   rates,
 		CacheDuration: int64(s.Stat.CacheDuration().Seconds()),
 	})
 }

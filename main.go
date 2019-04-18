@@ -3,13 +3,12 @@ package main
 import (
 	"time"
 
-	"github.com/yddmat/currency-converter/app/api/http/jrpc"
-
-	"github.com/yddmat/currency-converter/app/api/http/rest"
-
 	"github.com/tarent/logrus"
+	"github.com/yddmat/currency-converter/app/api/http/jrpc"
+	"github.com/yddmat/currency-converter/app/api/http/rest"
 	"github.com/yddmat/currency-converter/app/converter"
 	"github.com/yddmat/currency-converter/app/provider"
+	"github.com/yddmat/currency-converter/app/storage"
 	"github.com/yddmat/currency-converter/app/types"
 )
 
@@ -19,7 +18,7 @@ func main() {
 		{Base: "USD", To: "EUR"},
 	}
 
-	converter := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, time.Hour)
+	converter := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, storage.NewMemoryStorage(), time.Hour)
 	server := rest.Server{Converter: converter, Stat: converter, Port: "8080"}
 
 	go func() {

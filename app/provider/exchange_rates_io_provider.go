@@ -13,29 +13,29 @@ import (
 	"github.com/yddmat/currency-converter/app/types"
 )
 
-type ExchangeRatesIO struct {
+type ExchangeRatesIOProvider struct {
 	domain *url.URL
 	name   string
 }
 
-func NewExchangeRatesIOProvider() *ExchangeRatesIO {
+func NewExchangeRatesIOProvider() *ExchangeRatesIOProvider {
 	domain, err := url.Parse("https://api.exchangeratesapi.io")
 	if err != nil {
 		logrus.WithError(err).Fatal("parsing url")
 	}
 
-	return &ExchangeRatesIO{domain: domain, name: "exchangeratesapi.io"}
+	return &ExchangeRatesIOProvider{domain: domain, name: "exchangeratesapi.io"}
 }
 
 type getRateResponse struct {
 	Rates map[string]decimal.Decimal `json:"rates"`
 }
 
-func (e *ExchangeRatesIO) Name() string {
+func (e *ExchangeRatesIOProvider) Name() string {
 	return e.name
 }
 
-func (e *ExchangeRatesIO) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
+func (e *ExchangeRatesIOProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	resp := getRateResponse{}
 	r, _, err := gorequest.
 		New().
