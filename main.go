@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/tarent/logrus"
 	"github.com/yddmat/currency-converter/app/api/http/jrpc"
 	"github.com/yddmat/currency-converter/app/api/http/rest"
@@ -18,8 +19,8 @@ func main() {
 		{Base: "USD", To: "EUR"},
 	}
 
-	converter := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, storage.NewMemoryStorage(), time.Hour)
-	server := rest.Server{Converter: converter, Stat: converter, Port: "8080"}
+	con := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, storage.NewRedisStorage(redis.NewClient(&redis.Options{})), time.Hour)
+	server := rest.Server{Converter: con, Stat: con, Port: "8080"}
 
 	go func() {
 		logrus.Info("Starting rest server")
@@ -27,6 +28,6 @@ func main() {
 	}()
 
 	logrus.Info("Starting rpc server")
-	rpc := jrpc.Server{Converter: converter, Port: "4444"}
+	rpc := jrpc.Server{Converter: con, Port: "4444"}
 	logrus.WithError(rpc.Start()).Fatal("RPC server can't start")
 }

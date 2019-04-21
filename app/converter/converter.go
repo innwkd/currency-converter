@@ -51,6 +51,7 @@ func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (ty
 				return types.Conversion{}, errors.Wrapf(err, "can't get rate from provider")
 			}
 
+			rate.Provider = c.provider.Name()
 			rate, err = c.rateStorage.Set(pair, rate, c.cacheDuration)
 			if err != nil {
 				return types.Conversion{}, errors.Wrapf(err, "can't save new rate")
