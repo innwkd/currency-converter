@@ -65,19 +65,23 @@ curl --request GET --url http://localhost:10001/stat
 curl --request POST \
   --url http://localhost:11001/rpc \
   --header 'Content-Type: application/json' \
-  --data '{"method":"Converter.Convert","params":[{"pair":{"from":"EUR","to":"USD"},"amount":"10"}],"id":1}'
+  --data '{"method":"Converter.Convert","params":[{"pair":{"from":"USD","to":"EUR"},"amount":"10"}],"id":1}'
 ```
 ```
 {
-   "result":"8.869179601",
-   "currency_rate":{
-      "pair":{
-         "from":"USD",
-         "to":"EUR"
-      },
-      "value":"0.8869179601",
-      "provider":"exchangeratesapi.io",
-      "updated_at":"2019-03-13T16:49:05.315733+03:00"
-   }
+   "result":{
+      "result":"8.869179601",
+      "currency_rate":{
+         "pair":{
+            "from":"USD",
+            "to":"EUR"
+         },
+         "value":"0.8869179601",
+         "provider":"exchangeratesapi.io",
+         "updated_at":"2019-03-13T16:49:05.315733+03:00"
+      }
+   },
+   "error":null,
+   "id":1
 }
 ```
