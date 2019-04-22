@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/pkg/errors"
-
 	"github.com/go-redis/redis"
-
+	"github.com/pkg/errors"
 	"github.com/yddmat/currency-converter/app/types"
 )
 

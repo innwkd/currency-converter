@@ -14,4 +14,6 @@ COPY --from=build /go/src/github.com/yddmat/currency-converter/converter /srv
 WORKDIR /srv
 
 EXPOSE 8080
+EXPOSE 4444
+
 ENTRYPOINT ./converter

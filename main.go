@@ -19,7 +19,7 @@ func main() {
 		{Base: "USD", To: "EUR"},
 	}
 
-	con := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, storage.NewRedisStorage(redis.NewClient(&redis.Options{})), time.Hour)
+	con := converter.NewConverter(provider.NewExchangeRatesIOProvider(), bases, storage.NewRedisStorage(redis.NewClient(&redis.Options{Addr: "redis:6379"})), time.Hour)
 	server := rest.Server{Converter: con, Stat: con, Port: "8080"}
 
 	go func() {

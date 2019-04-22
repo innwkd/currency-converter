@@ -24,6 +24,6 @@ func (s *Server) Start() error {
 	}
 
 	router := chi.NewRouter()
-	router.Handle("/", jrpc)
+	router.Handle("/rpc", jrpc)
 	return http.ListenAndServe(fmt.Sprintf(":%s", s.Port), router)
 }

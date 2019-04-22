@@ -21,6 +21,60 @@
 			"revisionTime": "2018-05-31T15:06:17Z"
 		},
 		{
+			"checksumSHA1": "Bfy1uubkbAOD7iaS7ruomaB588I=",
+			"path": "github.com/go-redis/redis",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "z12gGj6VbVBcPOvof1aCM+DVGRU=",
+			"path": "github.com/go-redis/redis/internal",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "GQZsUVg/+6UpQAYpc4luMvMutSI=",
+			"path": "github.com/go-redis/redis/internal/consistenthash",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "l66eTZiJqueypc56HXCakGDm784=",
+			"path": "github.com/go-redis/redis/internal/hashtag",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "WoUjtqpn00RUnAgZLljk3lWfpSQ=",
+			"path": "github.com/go-redis/redis/internal/pool",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "zCo0t+gRBbctwyIpkDLrqRFtXew=",
+			"path": "github.com/go-redis/redis/internal/proto",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "1PH2NoAB/u3IZmLYyCrIbOzqLZ4=",
+			"path": "github.com/go-redis/redis/internal/util",
+			"revision": "40336e5ef89189115c9897cdc8f2b13d7a470015",
+			"revisionTime": "2019-01-21T14:27:48Z"
+		},
+		{
+			"checksumSHA1": "cEGJi/7oLd0aVb1TmU/FhIuTxZ0=",
+			"path": "github.com/gorilla/rpc",
+			"revision": "bffcfa752ad4e523cc8f720afeb5b985ed41ae16",
+			"revisionTime": "2019-03-25T17:12:44Z"
+		},
+		{
+			"checksumSHA1": "MJXGRZO5NQZLO4GEn8gnJK3aD5o=",
+			"path": "github.com/gorilla/rpc/json",
+			"revision": "bffcfa752ad4e523cc8f720afeb5b985ed41ae16",
+			"revisionTime": "2019-03-25T17:12:44Z"
+		},
+		{
 			"checksumSHA1": "CxNwJP++vjUAyy3bbJnNss1Il9Q=",
 			"path": "github.com/moul/http2curl",
 			"revision": "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d",

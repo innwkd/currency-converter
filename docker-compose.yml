@@ -1,0 +1,12 @@
+version: '3'
+services:
+  redis:
+    image: redis
+
+
+  backend:
+    build:
+      context: .
+    ports:
+      - "10000-10002:8080"
+      - "11000-11002:4444"

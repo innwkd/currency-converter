@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/shopspring/decimal"
-
 	"github.com/yddmat/currency-converter/app/types"
 )
 
