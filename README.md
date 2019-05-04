@@ -6,14 +6,13 @@ Not for production. For practise purposes only
 - https://exchangeratesapi.io/
 
 #### Run
-`docker build --tag yddmat/currency-converter .`
-
-`docker run -it --rm -p 12345:8080 yddmat/currency-converter`
+`docker-compose up --scale backend=3`
 
 #### Requests
+##### REST
 - Convert
 ```
-curl --request GET --url 'http://localhost:12345/convert?amount=10&from=USD&to=EUR'
+curl --request GET --url 'http://localhost:10000/convert?amount=10&from=USD&to=EUR'
 ```
 ```
 {
@@ -32,7 +31,7 @@ curl --request GET --url 'http://localhost:12345/convert?amount=10&from=USD&to=E
 
 - Stats
 ```
-curl --request GET --url http://localhost:12345/stat
+curl --request GET --url http://localhost:10001/stat
 ```
 ```
 {
@@ -58,5 +57,31 @@ curl --request GET --url http://localhost:12345/stat
       }
    ],
    "cache_duration":3600
+}
+```
+##### jRPC
+- Convert
+```
+curl --request POST \
+  --url http://localhost:11001/rpc \
+  --header 'Content-Type: application/json' \
+  --data '{"method":"Converter.Convert","params":[{"pair":{"from":"USD","to":"EUR"},"amount":"10"}],"id":1}'
+```
+```
+{
+   "result":{
+      "result":"8.869179601",
+      "currency_rate":{
+         "pair":{
+            "from":"USD",
+            "to":"EUR"
+         },
+         "value":"0.8869179601",
+         "provider":"exchangeratesapi.io",
+         "updated_at":"2019-03-13T16:49:05.315733+03:00"
+      }
+   },
+   "error":null,
+   "id":1
 }
 ```

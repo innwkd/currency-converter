@@ -1,9 +1,10 @@
 package types
 
 import (
-	"github.com/shopspring/decimal"
 	"fmt"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 // Currency in ISO 4217 format
@@ -28,8 +29,20 @@ type Converter interface {
 	Convert(pair CurrencyPair, amount decimal.Decimal) (Conversion, error)
 }
 
+type RateStorage interface {
+	// Set currency rate for specified pair
+	// If pair already have value it will be returned without updating
+	Set(pair CurrencyPair, rate CurrencyRate, duration time.Duration) (CurrencyRate, error)
+
+	// Get currency rate
+	Get(pair CurrencyPair) (CurrencyRate, error)
+
+	// GetAll is returning all stored rates
+	GetAll() ([]CurrencyRate, error)
+}
+
 type ConverterStat interface {
-	CachedRates() []CurrencyRate
+	CachedRates() ([]CurrencyRate, error)
 	AllowedPair() []CurrencyPair
 	CacheDuration() time.Duration
 }

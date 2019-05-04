@@ -1,19 +1,24 @@
-package http
+package rest
 
 import (
+	"fmt"
 	"net/http"
 	"time"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/shopspring/decimal"
-	"github.com/yddmat/currency-converter/app/types"
 	"github.com/tarent/logrus"
+
+	"github.com/yddmat/currency-converter/app/types"
 )
 
 type Server struct {
-	Converter     types.Converter
-	Stat types.ConverterStat
+	Converter types.Converter
+	Stat      types.ConverterStat
+
+	Port string
 }
 
 func (s *Server) Start() error {
@@ -25,7 +30,8 @@ func (s *Server) Start() error {
 	router.Get("/stat", s.statAction)
 	router.Get("/ping", s.pingAction)
 
-	return http.ListenAndServe(":8080", router)
+	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%s", s.Port), router))
+	return nil
 }
 
 func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
@@ -58,13 +64,20 @@ func (s *Server) convertAction(w http.ResponseWriter, r *http.Request) {
 type statResponse struct {
 	AvailablePair []types.CurrencyPair `json:"available_pair"`
 	CachedRates   []types.CurrencyRate `json:"cached_rates"`
-	CacheDuration int64               `json:"cache_duration"`
+	CacheDuration int64                `json:"cache_duration"`
 }
 
 func (s *Server) statAction(w http.ResponseWriter, r *http.Request) {
+	rates, err := s.Stat.CachedRates()
+	if err != nil {
+		logrus.WithError(err).Errorf("Can't retrieve cached rates ")
+		JSONInternalError(w, r)
+		return
+	}
+
 	render.JSON(w, r, statResponse{
 		AvailablePair: s.Stat.AllowedPair(),
-		CachedRates:   s.Stat.CachedRates(),
+		CachedRates:   rates,
 		CacheDuration: int64(s.Stat.CacheDuration().Seconds()),
 	})
 }
@@ -73,4 +86,3 @@ func (s *Server) pingAction(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("pong"))
 }
-
