@@ -34,9 +34,6 @@ func NewConverter(
 }
 
 func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
-	var err error
-	c.mu.RLock()
-
 	if !c.baseAllowed(pair) {
 		return types.Conversion{}, types.ConverterError("base is not allowed")
 	}
@@ -82,6 +79,9 @@ func (c *Converter) CacheDuration() time.Duration {
 }
 
 func (c *Converter) baseAllowed(pair types.CurrencyPair) bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
 	for _, base := range c.bases {
 		if base == pair {
 			return true
