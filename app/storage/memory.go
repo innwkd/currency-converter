@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/yddmat/currency-converter/app/types"
+	"currency-converter/app/types"
 )
 
 type value struct {

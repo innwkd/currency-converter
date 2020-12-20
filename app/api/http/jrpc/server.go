@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/rpc"
 	"github.com/gorilla/rpc/json"
 
-	"github.com/yddmat/currency-converter/app/types"
+	"currency-converter/app/types"
 )
 
 type Server struct {
