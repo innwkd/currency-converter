@@ -1,3 +1,4 @@
+//go:generate sh -c "mockery -inpkg -name RateProvider -print > file.tmp && mv file.tmp rate_provider_mock.go"
 package types
 
 import (

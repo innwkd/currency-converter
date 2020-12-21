@@ -3,23 +3,31 @@ package provider
 import (
 	"time"
 
+	"currency-converter/app/types"
+
 	"github.com/shopspring/decimal"
-	"github.com/yddmat/currency-converter/app/types"
 )
 
-type FakeProvider struct {
-	Rate       decimal.Decimal
-	UpdateTime time.Time
+type fakeProvider struct {
+	rate       decimal.Decimal
+	updateTime time.Time
 }
 
-func (fp *FakeProvider) Name() string {
+func NewFakeProvider(rate decimal.Decimal, updateTime time.Time) *fakeProvider {
+	return &fakeProvider{
+		rate:       rate,
+		updateTime: updateTime,
+	}
+}
+
+func (fp *fakeProvider) Name() string {
 	return "fake"
 }
 
-func (fp *FakeProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
+func (fp *fakeProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	return types.CurrencyRate{
 		Pair:      pair,
-		Value:     fp.Rate,
-		UpdatedAt: fp.UpdateTime,
+		Value:     fp.rate,
+		UpdatedAt: fp.updateTime,
 	}, nil
 }

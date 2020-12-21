@@ -1,19 +1,23 @@
+# Build
 FROM golang AS build
 
-ADD . /go/src/github.com/yddmat/currency-converter
-WORKDIR /go/src/github.com/yddmat/currency-converter
+ADD . /app/currency-converter
+WORKDIR /app/currency-converter
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o converter .
 
+
+# Run
 FROM alpine
 
 RUN apk add --no-cache ca-certificates
 
-COPY --from=build /go/src/github.com/yddmat/currency-converter/converter /srv
+COPY --from=build /app/currency-converter/converter /srv
+COPY --from=build /app/currency-converter/.env /srv
 
 WORKDIR /srv
 
-EXPOSE 8080
+EXPOSE 12345
 EXPOSE 4444
 
 ENTRYPOINT ./converter

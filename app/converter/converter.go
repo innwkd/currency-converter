@@ -1,58 +1,62 @@
 package converter
 
 import (
-	"sync"
 	"time"
+
+	"currency-converter/app/storage"
+	"currency-converter/app/types"
 
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
-	"github.com/yddmat/currency-converter/app/storage"
-	"github.com/yddmat/currency-converter/app/types"
 )
 
-type Converter struct {
+type converter struct {
 	provider      types.RateProvider
-	bases         []types.CurrencyPair
+	pairs         []types.CurrencyPair
 	rateStorage   types.RateStorage
 	cacheDuration time.Duration
-
-	mu sync.RWMutex
 }
 
 func NewConverter(
 	provider types.RateProvider,
-	bases []types.CurrencyPair,
+	pairs []types.CurrencyPair,
 	rateStorage types.RateStorage,
 	cacheDuration time.Duration,
-) *Converter {
-	return &Converter{
+) *converter {
+	if len(pairs) < 1 {
+		panic("need at least 1 currency pair")
+	}
+
+	return &converter{
 		provider:      provider,
-		bases:         bases,
+		pairs:         pairs,
 		rateStorage:   rateStorage,
 		cacheDuration: cacheDuration,
 	}
 }
 
-func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
+var BaseIsNotAllowed = types.ConverterError("base is not allowed")
+
+func (c *converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
 	if !c.baseAllowed(pair) {
-		return types.Conversion{}, types.ConverterError("base is not allowed")
+		return types.Conversion{}, BaseIsNotAllowed
 	}
 
 	rate, err := c.rateStorage.Get(pair)
 	if err != nil {
 		if !storage.IsNotExists(err) {
 			return types.Conversion{}, errors.Wrapf(err, "can't get info about rate from storage")
-		} else {
-			rate, err = c.provider.GetRate(pair)
-			if err != nil {
-				return types.Conversion{}, errors.Wrapf(err, "can't get rate from provider")
-			}
+		}
 
-			rate.Provider = c.provider.Name()
-			rate, err = c.rateStorage.Set(pair, rate, c.cacheDuration)
-			if err != nil {
-				return types.Conversion{}, errors.Wrapf(err, "can't save new rate")
-			}
+		rate, err = c.provider.GetRate(pair)
+		if err != nil {
+			return types.Conversion{}, errors.Wrapf(err, "can't get rate from provider")
+		}
+
+		rate.Provider = c.provider.Name()
+		rate, err = c.rateStorage.Set(pair, rate, c.cacheDuration)
+		if err != nil {
+			return types.Conversion{}, errors.Wrapf(err, "can't save new rate")
 		}
 	}
 
@@ -62,27 +66,20 @@ func (c *Converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (ty
 	}, nil
 }
 
-func (c *Converter) CachedRates() ([]types.CurrencyRate, error) {
+func (c *converter) CachedRates() ([]types.CurrencyRate, error) {
 	return c.rateStorage.GetAll()
 }
 
-func (c *Converter) AllowedPair() []types.CurrencyPair {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.bases
+func (c *converter) AllowedPair() []types.CurrencyPair {
+	return c.pairs
 }
 
-func (c *Converter) CacheDuration() time.Duration {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
+func (c *converter) CacheDuration() time.Duration {
 	return c.cacheDuration
 }
 
-func (c *Converter) baseAllowed(pair types.CurrencyPair) bool {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	for _, base := range c.bases {
+func (c *converter) baseAllowed(pair types.CurrencyPair) bool {
+	for _, base := range c.pairs {
 		if base == pair {
 			return true
 		}

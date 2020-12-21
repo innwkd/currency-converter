@@ -6,36 +6,37 @@ import (
 	"net/url"
 	"time"
 
+	"currency-converter/app/types"
+
 	"github.com/parnurzeal/gorequest"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
-	"github.com/tarent/logrus"
-	"github.com/yddmat/currency-converter/app/types"
+	"github.com/sirupsen/logrus"
 )
 
-type ExchangeRatesIOProvider struct {
+type exchangeRatesIOProvider struct {
 	domain *url.URL
 	name   string
 }
 
-func NewExchangeRatesIOProvider() *ExchangeRatesIOProvider {
+func NewExchangeRatesIOProvider() *exchangeRatesIOProvider {
 	domain, err := url.Parse("https://api.exchangeratesapi.io")
 	if err != nil {
 		logrus.WithError(err).Fatal("parsing url")
 	}
 
-	return &ExchangeRatesIOProvider{domain: domain, name: "exchangeratesapi.io"}
+	return &exchangeRatesIOProvider{domain: domain, name: "exchangeratesapi.io"}
 }
 
 type getRateResponse struct {
 	Rates map[string]decimal.Decimal `json:"rates"`
 }
 
-func (e *ExchangeRatesIOProvider) Name() string {
+func (e *exchangeRatesIOProvider) Name() string {
 	return e.name
 }
 
-func (e *ExchangeRatesIOProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
+func (e *exchangeRatesIOProvider) GetRate(pair types.CurrencyPair) (types.CurrencyRate, error) {
 	resp := getRateResponse{}
 	r, _, err := gorequest.
 		New().

@@ -3,8 +3,9 @@ package jrpc
 import (
 	"net/http"
 
+	"currency-converter/app/types"
+
 	"github.com/shopspring/decimal"
-	"github.com/yddmat/currency-converter/app/types"
 )
 
 type ConverterArgs struct {

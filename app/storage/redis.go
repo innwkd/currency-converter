@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"currency-converter/app/types"
+
 	"github.com/go-redis/redis"
 	"github.com/pkg/errors"
-	"github.com/yddmat/currency-converter/app/types"
 )
 
 const pattern = "cur:%s"

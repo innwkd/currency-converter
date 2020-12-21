@@ -1,3 +1,4 @@
+//go:generate sh -c "mockery -inpkg -name RateStorage -print > file.tmp && mv file.tmp rate_storage_mock.go"
 package types
 
 import (
@@ -29,6 +30,12 @@ type Converter interface {
 	Convert(pair CurrencyPair, amount decimal.Decimal) (Conversion, error)
 }
 
+type ConverterStat interface {
+	CachedRates() ([]CurrencyRate, error)
+	AllowedPair() []CurrencyPair
+	CacheDuration() time.Duration
+}
+
 type RateStorage interface {
 	// Set currency rate for specified pair
 	// If pair already have value it will be returned without updating
@@ -39,10 +46,4 @@ type RateStorage interface {
 
 	// GetAll is returning all stored rates
 	GetAll() ([]CurrencyRate, error)
-}
-
-type ConverterStat interface {
-	CachedRates() ([]CurrencyRate, error)
-	AllowedPair() []CurrencyPair
-	CacheDuration() time.Duration
 }

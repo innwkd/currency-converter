@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"time"
 
+	"currency-converter/app/types"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/shopspring/decimal"
-	"github.com/tarent/logrus"
-
-	"github.com/yddmat/currency-converter/app/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Server struct {
