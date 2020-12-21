@@ -1,9 +1,19 @@
 ## Currency converter
 Not for production. For practise purposes only
 
-## Supported currency providers
+#### Supported currency providers
 - fake
 - https://exchangeratesapi.io/
+
+#### Available env configs
+- `DEBUG`= 0 | 1
+- `APP_REST_PORT`= 12345
+- `APP_RPC_PORT`= 4444
+- `APP_CACHE_DURATION_MIN`= 60
+- `APP_RATE_PROVIDER`= fake | exchangeratesapi.io
+- `STORAGE_TYPE`= redis | memory
+- `STORAGE_REDIS_HOST`= redis
+- `STORAGE_REDIS_PORT`= 6379
 
 #### Run
 `docker-compose up --scale backend=3`

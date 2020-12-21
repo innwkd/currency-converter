@@ -17,6 +17,6 @@ require (
 	github.com/shopspring/decimal v1.0.2-0.20180607144847-19e3cb6c2930
 	github.com/sirupsen/logrus v1.7.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/stretchr/testify v1.6.1
 	golang.org/x/text v0.3.4 // indirect
 )

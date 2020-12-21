@@ -1,3 +1,4 @@
+# Build
 FROM golang AS build
 
 ADD . /app/currency-converter
@@ -6,7 +7,7 @@ WORKDIR /app/currency-converter
 RUN CGO_ENABLED=0 GOOS=linux go build -o converter .
 
 
-
+# Run
 FROM alpine
 
 RUN apk add --no-cache ca-certificates

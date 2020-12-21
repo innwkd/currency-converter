@@ -5,6 +5,7 @@ services:
 
 
   backend:
+    restart: "no"
     build:
       context: .
     ports:

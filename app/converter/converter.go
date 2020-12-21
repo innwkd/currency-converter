@@ -1,7 +1,6 @@
 package converter
 
 import (
-	"sync"
 	"time"
 
 	"currency-converter/app/storage"
@@ -13,30 +12,34 @@ import (
 
 type converter struct {
 	provider      types.RateProvider
-	bases         []types.CurrencyPair
+	pairs         []types.CurrencyPair
 	rateStorage   types.RateStorage
 	cacheDuration time.Duration
-
-	mu sync.RWMutex
 }
 
 func NewConverter(
 	provider types.RateProvider,
-	bases []types.CurrencyPair,
+	pairs []types.CurrencyPair,
 	rateStorage types.RateStorage,
 	cacheDuration time.Duration,
 ) *converter {
+	if len(pairs) < 1 {
+		panic("need at least 1 currency pair")
+	}
+
 	return &converter{
 		provider:      provider,
-		bases:         bases,
+		pairs:         pairs,
 		rateStorage:   rateStorage,
 		cacheDuration: cacheDuration,
 	}
 }
 
+var BaseIsNotAllowed = types.ConverterError("base is not allowed")
+
 func (c *converter) Convert(pair types.CurrencyPair, amount decimal.Decimal) (types.Conversion, error) {
 	if !c.baseAllowed(pair) {
-		return types.Conversion{}, types.ConverterError("base is not allowed")
+		return types.Conversion{}, BaseIsNotAllowed
 	}
 
 	rate, err := c.rateStorage.Get(pair)
@@ -68,22 +71,15 @@ func (c *converter) CachedRates() ([]types.CurrencyRate, error) {
 }
 
 func (c *converter) AllowedPair() []types.CurrencyPair {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.bases
+	return c.pairs
 }
 
 func (c *converter) CacheDuration() time.Duration {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
 	return c.cacheDuration
 }
 
 func (c *converter) baseAllowed(pair types.CurrencyPair) bool {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	for _, base := range c.bases {
+	for _, base := range c.pairs {
 		if base == pair {
 			return true
 		}
